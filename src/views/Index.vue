@@ -62,7 +62,7 @@
                     {
                         width: "80vw",
                         height: "80vh",
-                        right:"45vw",
+                        right:"50vw",
                         transform:"translateX(50%)",
                         top:"15vh"
                     },
