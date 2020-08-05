@@ -18,12 +18,12 @@
         display: inline-block;
     }
     .title{
-        color: #232349;
+        color: rgba(46,47,110);
         font-size: 16px;
         font-weight: 600;
     }
     .content-title{
-        color: #232349;
+        color: rgba(46,47,110);
         font-size: 130px;
         font-weight: 500;
         span{

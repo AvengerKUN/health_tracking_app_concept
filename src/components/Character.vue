@@ -10,18 +10,46 @@
 
     export default {
         name: "Character",
+        data(){
+            return {
+                camera:null,
+                character:null,
+            }
+        },
         mounted() {
             this.init();
         },
         methods:{
+            lerp(p0, p1, value) {
+                return (1 - value) * p0 + value * p1;
+            },
+            overVector(v1,v2,time,fun){
+                let that = this;
+                let num = 0;
+                let times = 0;
+                requestAnimationFrame(function anim(timestamp){
+                    if(times && timestamp){
+                        num = num + (timestamp - times);
+                        let per = Math.min(num / time,1);
+                        fun(new THREE.Vector3(that.lerp(v1.x,v2.x,per),that.lerp(v1.y,v2.y,per),that.lerp(v1.z,v2.z,per)));
+                    }
+                    times = timestamp;
+
+                    if(num < time){
+                        requestAnimationFrame(anim);
+                    }
+                });
+            },
             init(){
+                let that = this;
+
                 let mixer;
                 let clock = new THREE.Clock();
                 let DIndex = this.$refs["character"];
                 let scene = new THREE.Scene();
                 //设置摄像机
-                let camera = new THREE.PerspectiveCamera( 45, DIndex.clientWidth / DIndex.clientHeight, 1, 2000 );
-                camera.position.set( 0, 100, 300 );
+                this.camera = new THREE.PerspectiveCamera( 45, DIndex.clientWidth / DIndex.clientHeight / .9, 1, 2000 );
+                this.camera.position.set( 0, 100, 300 );
 
                 let renderer = new THREE.WebGLRenderer({alpha:true,antialias: true});
                 renderer.setClearAlpha(0);
@@ -54,7 +82,7 @@
                         object.children[i].castShadow = true;
                     }
                     scene.add( object );
-
+                    that.character = object;
                 } );
 
                 function animate() {
@@ -63,10 +91,26 @@
 
                     //更新动画
                     if ( mixer && delta) mixer.update( delta );
-                    renderer.render( scene, camera );
+                    renderer.render( scene, that.camera );
                     requestAnimationFrame( animate );
                 }
                 animate(0);
+            },
+            moveLeft(){
+                this.overVector(new THREE.Vector3(0, 0, 0),new THREE.Vector3(0, 1.5, 0),1000,(vector3)=>{
+                    // console.log(vector3);
+                    this.character.rotation.set(vector3.x,vector3.y,vector3.z);
+                });
+                this.overVector(new THREE.Vector3(0, 100, 300),new THREE.Vector3(0, 100, 300),1000,(vector3)=>{
+                    // console.log(vector3);
+                    this.camera.position.set(vector3.x,vector3.y,vector3.z);
+                });
+            },
+            moveFront(){
+                this.overVector(new THREE.Vector3(0, 1.5, 0),new THREE.Vector3(0, 0, 0),1000,(vector3)=>{
+                    // console.log(vector3);
+                    this.character.rotation.set(vector3.x,vector3.y,vector3.z);
+                });
             }
         }
     }

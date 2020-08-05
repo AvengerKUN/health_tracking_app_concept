@@ -1,4 +1,5 @@
 module.exports = {
+    publicPath: '/health_tracking_app_concept/',
     css: {
         loaderOptions: {
             postcss: {

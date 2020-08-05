@@ -5,6 +5,9 @@
 </template>
 
 <style lang="scss">
+
+  @import "./assets/icon.scss";
+
   html,body,#app{
     width: 100%;
     height: 100%;
